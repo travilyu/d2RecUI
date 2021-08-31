@@ -1,0 +1,14 @@
+/* ./src/index.css */
+
+/*! @import */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  height: 100%;
+  width: 100%;
+}
+#app {
+  height: 100%;
+}
