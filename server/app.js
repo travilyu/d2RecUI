@@ -20,6 +20,36 @@ server.get('/users', function(req, res, next) {
     })
 })
 
+server.patch('/users', function(req, res, next) {
+  let resReturn = genResReturn(res, next)
+  User.modifyUser(req.body)
+    .then(data => {
+      resReturn(success(data))
+    }).catch(e => {
+      resReturn(fail(e.message))
+    })
+})
+
+server.post('/users', function(req, res, next) {
+  let resReturn = genResReturn(res, next)
+  User.createUser(req.body)
+    .then(data => {
+      resReturn(success(data))
+    }).catch(e => {
+      resReturn(fail(e.message))
+    })
+})
+
+server.del('/users/:id', function(req, res, next) {
+  let resReturn = genResReturn(res, next)
+  User.delUser(req.params)
+    .then(data => {
+      resReturn(success(data))
+    }).catch(e => {
+      resReturn(fail(e.message))
+    })
+})
+
 //Match
 let Match = require('./match.js')
 server.get('/matches', function(req, res, next) {
@@ -27,6 +57,36 @@ server.get('/matches', function(req, res, next) {
   let params = req.params
   logger.debug(params)
   Match.getAllMatches(params || {})
+    .then(data => {
+      resReturn(success(data))
+    }).catch(e => {
+      resReturn(fail(e.message))
+    })
+})
+
+server.patch('/matches', function(req, res, next) {
+  let resReturn = genResReturn(res, next)
+  Match.modifyMatch(req.body)
+    .then(data => {
+      resReturn(success(data))
+    }).catch(e => {
+      resReturn(fail(e.message))
+    })
+})
+
+server.post('/matches', function(req, res, next) {
+  let resReturn = genResReturn(res, next)
+  Match.createMatch(req.body)
+    .then(data => {
+      resReturn(success(data))
+    }).catch(e => {
+      resReturn(fail(e.message))
+    })
+})
+
+server.del('/matches/:id', function(req, res, next) {
+  let resReturn = genResReturn(res, next)
+  Match.delMatch(req.params.id)
     .then(data => {
       resReturn(success(data))
     }).catch(e => {

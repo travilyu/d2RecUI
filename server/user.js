@@ -20,6 +20,8 @@ let createUser = async(params) => {
 }
 
 let modifyUser = async(params) => {
+  delete params.createdAt
+  delete params.updatedAt
   if (params.name) {
     let check = await User.findOne({
       where: {

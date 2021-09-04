@@ -3,8 +3,6 @@ import Qs from 'qs'
 import objectHash from 'object-hash'
 let api = axios.create({
   baseURL: '/',
-  headers: {
-  },
   paramsSerializer: params => Qs.stringify(params, {
     indices: false
   })

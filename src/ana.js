@@ -1,5 +1,5 @@
 import { createApp } from 'vue'
-import App from './views/Match.vue'
+import App from './views/Ana.vue'
 import './base.js'
 import Antd from 'ant-design-vue';
 

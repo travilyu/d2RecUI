@@ -1,4 +1,5 @@
-export default [
+import _ from 'lodash'
+export let heros = [
   {
     "img": "npc_dota_hero_elder_titan.png",
     "text": "上古巨神"
@@ -484,3 +485,10 @@ export default [
     "text": "龙骑士"
   }
 ]
+
+export let heroMap = _.keyBy(heros.map(d => {
+  return {
+    text: d.text,
+    img: `/d2img/${d.img}`,
+  }
+}), 'text')

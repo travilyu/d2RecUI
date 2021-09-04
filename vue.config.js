@@ -8,6 +8,8 @@ module.exports = {
     entry: {
       index: 'src/main.js',
       list: 'src/list.js',
+      user: 'src/user.js',
+      ana: 'src/ana.js',
     },
     resolve: {
       alias: {
@@ -25,10 +27,24 @@ module.exports = {
       }),
       new HtmlWebpackPlugin({
         baseUrl: '/',
-        title: '系统',
+        title: '比赛记录',
         filename: 'list.html',
         template: 'public/index.html',
         chunks: ['list']
+      }),
+      new HtmlWebpackPlugin({
+        baseUrl: '/',
+        title: '用户',
+        filename: 'user.html',
+        template: 'public/index.html',
+        chunks: ['user']
+      }),
+      new HtmlWebpackPlugin({
+        baseUrl: '/',
+        title: '数据分析',
+        filename: 'ana.html',
+        template: 'public/index.html',
+        chunks: ['ana']
       }),
       new CopyWebpackPlugin({
         patterns: [
@@ -47,5 +63,5 @@ module.exports = {
       .use('vue-svg-loader')
       .loader('vue-svg-loader')
   },
-
+  filenameHashing: false,
 }

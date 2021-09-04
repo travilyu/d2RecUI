@@ -1,6 +1,7 @@
-import API from './api.js'
-import * as app from 'js/app.js'
+import API from './api_base.js'
 import Cookies from 'js-cookie'
+import { message } from 'ant-design-vue'
+import Qs from 'qs'
 
 let api = API.api
 api.interceptors.request.use(function(config) {
@@ -8,29 +9,39 @@ api.interceptors.request.use(function(config) {
   if (token) {
     config.headers.token = token
   }
+  // form-urlencode的header
+  if (config.method.toLowerCase() === 'post' || config.method.toLowerCase() === 'patch') {
+    config.data = Qs.stringify(config.data)
+    config.headers['content-type'] = 'application/x-www-form-urlencoded'
+  }
+  console.log(config.data)
   return config
 }, function(error) {
   return Promise.reject(error)
 })
 
-import Vue from 'vue'
 api.interceptors.response.use(function(data) {
   if (data.data && data.data.OPT_STATUS && data.data.OPT_STATUS === 'SUCCESS') {
     return data.data.DATA
   } else {
-    if (data.status !== 401) {
-      if ('MSG' in data.data) {
-        Vue.prototype.$message.error(data.data.MSG)
-      }
-    } else if (window.location.pathname !== '/')  {
-      window.location.href = '/'
-    }
+    let msg = _.get(data.data, 'MSG', '请求错误')
+    message.error(msg)
     return Promise.reject(data)
   }
 }, function(error) {
   let msg = _.get(error, 'response.data.MSG', '请求错误')
-  if (app.loaded || error.response.status !== 401 ) {
-    Vue.prototype.$message.error(msg)
-  }
+  message.error(msg)
   return Promise.reject(error)
 })
+
+// let base = 'http://ame:10002'
+let base = ''
+export let getUsers = API.get(base + '/api/users')
+export let createUser = API.post(base + '/api/users')
+export let modifyUser = API.patch(base + '/api/users')
+export let delUser = id => API.del(base + `/api/users/${id}`)()
+
+export let getMatches = API.get(base + '/api/matches')
+export let createMatch = API.post(base + '/api/matches')
+export let modifyMatch = API.patch(base + '/api/matches')
+export let delMatch = id => API.del(base + `/api/matches/${id}`)()

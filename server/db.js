@@ -41,7 +41,8 @@ module.exports.Match = s.define("match", {
   d_p_2: { type: S.INTEGER },
   d_p_3: { type: S.INTEGER },
   d_p_4: { type: S.INTEGER },
-  d_p_5: { type: S.INTEGER }
+  d_p_5: { type: S.INTEGER },
+  hash: {type: S.STRING},
 })
 
 s.sync()
