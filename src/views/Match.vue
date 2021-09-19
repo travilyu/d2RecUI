@@ -5,43 +5,32 @@ div.m-2
       a-col(:span='12')
         a-statistic.ml-10(title='共计场数' :value='count')
   div
-    a-button(type='primary' @click='showModal') 添加
+    <!--a-button(type='primary' @click='showModal') 添加 -->
+    a-upload(name='file' multiple action='/admin/uploadRec' @change='fileChange')
+      a-button(type='primary')
+        upload-outlined
+        |上传Rep
   div
-    a-modal(:visible='visible' :title='modalTitle' @ok='submit' @cancel='visible=false' width='100%' wrapClassName='full-modal')
-      a-form(:model='formData' ref='formRef')
-        div.m-2.grid.grid-cols-1.gap-x-16(class='sm:grid-cols-2')
-          div
-            div
-              a-radio(:checked='formData.win === "radiant"' @click='formData.win="radiant"') 获胜
-            div
-              span.text-4xl(@click='formData.win="radiant"') 天辉
-            template(v-for='(player, i) in formData.radiant' :key='Math.random()')
-              hero-and-player( v-model:user='player.user' v-model:hero='player.hero' side='radiant' :index='i' :v='vs[i]')
-          div
-            div
-              a-radio(:checked='formData.win === "dire"' @click='formData.win="dire"') 获胜
-            div
-              span.text-4xl(@click='formData.win="dire"') 夜魇
-            template(v-for='(player, i) in formData.dire' :key='Math.random()')
-              hero-and-player( v-model:user='player.user' v-model:hero='player.hero' side='dire' :index='i' :v='vs[i+5]')
     a-table(:dataSource='tableData' rowKey='id' :columns='columns' :loading='loading')
       template(#time='{text}')
-        span {{text}}
+        span {{toLocalTime(text)}}
       template(#win='{text}')
-        span {{text === 'radiant' ? '天辉' : '夜魇'}}
+        span {{text === '天辉' ? '天辉' : '夜魇'}}
       template(#radiant='{text: rs}')
         div(v-for='r in rs' style='margin:2px 0;')
           img(width='48' height='27' :src='heroMap[r.hero].img' style='display:inline-block')
-          span(style='display: inline-block; margin-left: 5px') {{ userMap[r.user].name }}
+          span(style='display: inline-block; margin-left: 5px') {{ userMap[r.user].nick_name || r.user }}
       template(#dire='{text: rs}')
         div(v-for='r in rs' style='margin:2px 0;')
           img(width='48' height='27' :src='heroMap[r.hero].img' style='display:inline-block')
-          span(style='display: inline-block; margin-left: 5px') {{ userMap[r.user].name }}
-      template(#action='{record}')
+          span(style='display: inline-block; margin-left: 5px') {{ userMap[r.user].nick_name || r.user }}
+
+      // template(#action='{record}')
         a(@click='openModifyMatchModal(record)') 编辑
         a-divider(type='vertical')
         a-popconfirm(title='确认删除？' ok-text='是' cancel-text='否' @confirm='delMatch(record)' @cancel='')
           a 删除
+
   div.m-2.bg-gray-50.grid.grid-cols-1.gap-4(class='sm:grid-cols-2')
     div
     div
@@ -49,29 +38,39 @@ div.m-2
 </template>
 
 <script>
+  import moment from 'moment'
   import {
-    ref,
-  } from 'vue'
-  import HeroAndPlayer from './HeroAndPlayer.vue'
+    message,
+    Row as ARow,
+    Col as ACol,
+    Button as AButton,
+    Table as ATable,
+    Upload as AUpload,
+    Statistic as AStatistic,
+  } from 'ant-design-vue'
+  import { ref } from 'vue'
   import {
     getMatches,
     createMatch,
     modifyMatch,
     delMatch as delMatchApi,
   } from 'src/js/api.js'
-  import {
-    UserMap as userMap
-  } from 'src/js/preload.js'
-  import {
-    heroMap,
-  } from 'src/js/heros.js'
+  import { UserMap as userMap } from 'src/js/preload.js'
+  import { heroMap } from 'src/js/heros.js'
+  import { UploadOutlined } from '@ant-design/icons-vue'
   export default {
     components: {
-      HeroAndPlayer,
+      UploadOutlined,
+      ARow,
+      ACol,
+      AUpload,
+      AButton,
+      ATable,
+      AStatistic,
     },
     setup() {
       let count = ref(1)
-      let visible =ref(false)
+      let visible = ref(false)
       let tableData = ref([])
       let modalTitle = ref('')
       let genPlayer = () => {
@@ -80,15 +79,15 @@ div.m-2
           user: null,
         }
       }
-      let getV = (player) => {
+      let getV = player => {
         return {
           hero: {
             status: 'success',
-            help: ''
+            help: '',
           },
           user: {
             status: 'success',
-            help: ''
+            help: '',
           },
         }
       }
@@ -116,19 +115,15 @@ div.m-2
       let formRef = ref()
       let loading = ref(false)
 
-
       let heroSet = new Set()
       let userSet = new Set()
       let validate = () => {
         heroSet.clear()
         userSet.clear()
         let ans = 1
-        let d = [
-          ...formData.value.radiant,
-          ...formData.value.dire,
-        ]
-        for (let i =0; i<10; i+= 1) {
-          let {hero, user} = d[i]
+        let d = [...formData.value.radiant, ...formData.value.dire]
+        for (let i = 0; i < 10; i += 1) {
+          let { hero, user } = d[i]
           vs.value[i].hero.status = 'success'
           vs.value[i].hero.help = ''
           if (!hero) {
@@ -160,7 +155,7 @@ div.m-2
       let loadMatches = () => {
         loading.value = true
         getMatches()
-          .then((matches) => {
+          .then(matches => {
             tableData.value = matches
             count.value = matches.length
           })
@@ -175,18 +170,26 @@ div.m-2
         return createMatch(formData.value)
       }
       let showModal = () => {
-          formData.value = createNewFormData()
-          confirmAction = addMatch
-          modalTitle.value = '新增比赛'
-          visible.value = true
-        }
-      let openModifyMatchModal = (match) => {
+        formData.value = createNewFormData()
+        confirmAction = addMatch
+        modalTitle.value = '新增比赛'
+        visible.value = true
+      }
+      let openModifyMatchModal = match => {
         formData.value = match
         console.log(match, formData)
         visible.value = true
         modalTitle.value = '修改比赛'
         confirmAction = () => {
           return modifyMatch(formData.value)
+        }
+      }
+      let fileChange = info => {
+        if (info.file.status === 'success') {
+          message.success('上传成功')
+          loadMatches()
+        } else if (info.file.status === 'error') {
+          message.error('上传失败')
         }
       }
 
@@ -203,31 +206,51 @@ div.m-2
         modalTitle,
         showModal,
         openModifyMatchModal,
-        delMatch: (match) => {
-          delMatchApi(match.id)
-            .then(() => {
-              loadMatches()
-            })
+        delMatch: match => {
+          delMatchApi(match.id).then(() => {
+            loadMatches()
+          })
         },
-        submit: (e) => {
+        submit: e => {
           let ok = validate()
           if (ok) {
-            confirmAction()
-              .then(() => {
-                loadMatches()
-                visible.value = false
-              })
+            confirmAction().then(() => {
+              loadMatches()
+              visible.value = false
+            })
           }
         },
         columns: [
-          {dataIndex: 'updatedAt', title: '时间', key: 'time', slots: { customRender: 'time' }},
-          {dataIndex: 'win', title: '获胜', key: 'win', slots: { customRender: 'win' }},
-          {dataIndex: 'radiant', title: '天辉', key: 'radiant', slots: { customRender: 'radiant' }},
-          {dataIndex: 'dire', title: '夜魇', key: 'dire', slots: { customRender: 'dire' }},
-          {title: '操作', key: 'action', slots: { customRender: 'action' }}
+          {
+            dataIndex: 'time',
+            title: '时间',
+            key: 'time',
+            slots: { customRender: 'time' },
+          },
+          {
+            dataIndex: 'win',
+            title: '获胜',
+            key: 'win',
+            slots: { customRender: 'win' },
+          },
+          {
+            dataIndex: 'radiant',
+            title: '天辉',
+            key: 'radiant',
+            slots: { customRender: 'radiant' },
+          },
+          {
+            dataIndex: 'dire',
+            title: '夜魇',
+            key: 'dire',
+            slots: { customRender: 'dire' },
+          },
+          // { title: '操作', key: 'action', slots: { customRender: 'action' } },
         ],
+        fileChange,
+        toLocalTime: t => moment(t).format('YYYY-MM-DD: HH:mm:ss'),
       }
-    }
+    },
   }
 </script>
 <style lang="less">

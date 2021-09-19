@@ -14,7 +14,6 @@ api.interceptors.request.use(function(config) {
     config.data = Qs.stringify(config.data)
     config.headers['content-type'] = 'application/x-www-form-urlencoded'
   }
-  console.log(config.data)
   return config
 }, function(error) {
   return Promise.reject(error)
@@ -34,14 +33,19 @@ api.interceptors.response.use(function(data) {
   return Promise.reject(error)
 })
 
-// let base = 'http://ame:10002'
-let base = ''
+let base = process.env.NODE_ENV === 'development' ? 'http://ame:10002' : ''
 export let getUsers = API.get(base + '/api/users')
 export let createUser = API.post(base + '/api/users')
 export let modifyUser = API.patch(base + '/api/users')
 export let delUser = id => API.del(base + `/api/users/${id}`)()
 
+export let getPlayers = API.get(base + '/api/players')
+export let modifyPlayer = API.patch(base + '/api/players')
+
 export let getMatches = API.get(base + '/api/matches')
 export let createMatch = API.post(base + '/api/matches')
 export let modifyMatch = API.patch(base + '/api/matches')
 export let delMatch = id => API.del(base + `/api/matches/${id}`)()
+
+export let getAllRate = API.get(base + '/api/ana/all')
+export let getPlayerStatistic = id => API.get(base + `/api/ana/${id}`)()

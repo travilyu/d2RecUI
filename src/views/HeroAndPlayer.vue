@@ -9,8 +9,7 @@ div.grid.grid-rows-2.grid-cols-6.gap-1.mx-2.my-6
       a-select(:value='selectedHero.hero' @change='heroChange' show-search)
         a-select-option(v-for='hero in heros' :value='hero.text') {{hero.text}}
     a-form-item(:name='[side, index, "hero"]' :validateStatus='v.user.status' :help='v.user.help')
-      a-select(:value='selectedHero.user' @change='userChange' show-search)
-        a-select-option(v-for='user in Users' :value='user.id') {{ getFullName(user) }}
+      a-select(v-model:value='selectedHero.user' :options='userOptions' @change='userChange' show-search optionFilterProp='label')
 </template>
 <script>
 import {
@@ -47,9 +46,12 @@ export default {
       selectedHero.value.user = v
       emit('update:user', v)
     }
-    let getFullName = user => {
-      return user.alias ? `${user.name}(${user.alias})` : user.name
-    }
+    let userOptions = ref(Users.value.map(d => {
+      return {
+        label: d.fullName,
+        value: d.id,
+      }
+    }))
     return {
       selectedHero,
       heroChange,
@@ -58,7 +60,7 @@ export default {
       heroMap,
       defaultHero,
       userChange,
-      getFullName,
+      userOptions,
     }
   }
 }

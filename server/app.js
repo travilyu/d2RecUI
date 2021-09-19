@@ -8,6 +8,27 @@ let {
   fail
 } = require('./util.js')
 
+let Player = require('./player.js')
+server.get('/players', function(req, res, next) {
+  let resReturn = genResReturn(res, next)
+  Player.getAllPlayers()
+    .then(data => {
+      resReturn(success(data))
+    }).catch(e => {
+      resReturn(fail(e.message))
+    })
+})
+
+server.patch('/players', function(req, res, next) {
+  let resReturn = genResReturn(res, next)
+  Player.modifyPlayer(req.body)
+    .then(data => {
+      resReturn(success(data))
+    }).catch(e => {
+      resReturn(fail(e.message))
+    })
+})
+
 //User
 let User = require('./user.js')
 server.get('/users', function(req, res, next) {
@@ -90,6 +111,29 @@ server.del('/matches/:id', function(req, res, next) {
     .then(data => {
       resReturn(success(data))
     }).catch(e => {
+      resReturn(fail(e.message))
+    })
+})
+
+const Ana = require('./ana.js')
+server.get('/ana/:sid', function(req, res, next) {
+  let resReturn = genResReturn(res, next)
+  Ana.getPlayerStatistic(req.params.sid)
+    .then(data => {
+      resReturn(success(data))
+    }).catch(e => {
+      logger.error(e.stack)
+      resReturn(fail(e.message))
+    })
+})
+
+server.get('/ana/all', function(req, res, next) {
+  let resReturn = genResReturn(res, next)
+  Ana.countAllWinRate()
+    .then(data => {
+      resReturn(success(data))
+    }).catch(e => {
+      logger.error(e.stack)
       resReturn(fail(e.message))
     })
 })

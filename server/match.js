@@ -42,6 +42,7 @@ let genOutputMatch = match => {
     id: match.id,
     createdAt: match.createdAt,
     updatedAt: match.updatedAt,
+    time: match.time,
   }
   ;[1, 2, 3, 4, 5].forEach(i => {
     res.radiant[i - 1] = {
@@ -56,15 +57,36 @@ let genOutputMatch = match => {
   return res
 }
 
+let genPlayerCondBy = (side, winSide) => (player, i) => {
+  let prefix = side === '天辉' ? 'r_p_' : 'd_p_'
+  let cond = {
+    [`${prefix}${i}`]: player
+  }
+  if (winSide) {
+    cond.win = winSide
+  }
+  return cond
+}
+
+let otherSide = side => side === '天辉' ? '夜魇' : '天辉'
+
 // 前端负责将用户name或别名转换为对应的id
 let getAllMatches = async (options = {}) => {
   let filters = []
+  let winBy = (side) => {
+    if (_.isUndefined(options.win)) {
+      return null
+    }
+    return options.win ? side : otherSide(side)
+  }
+  let rPlayerCond = genPlayerCondBy('天辉', winBy('天辉'))
+  let dPlayerCond = genPlayerCondBy('夜魇', winBy('夜魇'))
   if (options.player) {
     let player = pack(options.player)
     filters.push({
       [Op.or]: gen5Filter((i, res) => {
-        res.push({ [`d_p_${i}`]: player })
-        res.push({ [`r_p_${i}`]: player })
+        res.push(rPlayerCond(player, i))
+        res.push(dPlayerCond(player, i))
       })
     })
   }
@@ -72,7 +94,7 @@ let getAllMatches = async (options = {}) => {
     let rplayer = pack(options.rplayer)
     filters.push({
       [Op.or]: gen5Filter((i, res) => {
-        res.push({ [`r_p_${i}`]: rplayer })
+        res.push(rPlayerCond(rplayer, i))
       })
     })
   }
@@ -80,7 +102,7 @@ let getAllMatches = async (options = {}) => {
     let dplayer = pack(options.dplayer)
     filters.push({
       [Op.or]: gen5Filter((i, res) => {
-        res.push({ [`d_p_${i}`]: dplayer })
+        res.push(dPlayerCond(dplayer, i))
       })
     })
   }
@@ -98,8 +120,8 @@ let getAllMatches = async (options = {}) => {
     options.multiPlayer.forEach(player => {
       filters.push({
         [Op.or]: gen5Filter((i, res) => {
-          res.push({ [`d_p_${i}`]: player })
-          res.push({ [`r_p_${i}`]: player })
+          res.push(rPlayerCond(player, i))
+          res.push(dPlayerCond(player, i))
         })
       })
     })
@@ -107,7 +129,8 @@ let getAllMatches = async (options = {}) => {
   let matches = await Match.findAll({
     where: {
       [Op.and]: filters
-    }
+    },
+    order: [['time', 'desc']]
   })
   return matches.map(genOutputMatch)
 }

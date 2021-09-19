@@ -1,5 +1,5 @@
 const resolve = (...dirs) => require('path').resolve(__dirname, ...dirs)
-const HtmlWebpackPlugin = require('html-webpack-plugin')
+// const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 module.exports = {
@@ -7,9 +7,6 @@ module.exports = {
   configureWebpack: {
     entry: {
       index: 'src/main.js',
-      list: 'src/list.js',
-      user: 'src/user.js',
-      ana: 'src/ana.js',
     },
     resolve: {
       alias: {
@@ -18,34 +15,34 @@ module.exports = {
       },
     },
     plugins: [
-      new HtmlWebpackPlugin({
-        baseUrl: '/',
-        title: '系统',
-        filename: 'index.html',
-        template: 'public/index.html',
-        chunks: ['index']
-      }),
-      new HtmlWebpackPlugin({
-        baseUrl: '/',
-        title: '比赛记录',
-        filename: 'list.html',
-        template: 'public/index.html',
-        chunks: ['list']
-      }),
-      new HtmlWebpackPlugin({
-        baseUrl: '/',
-        title: '用户',
-        filename: 'user.html',
-        template: 'public/index.html',
-        chunks: ['user']
-      }),
-      new HtmlWebpackPlugin({
-        baseUrl: '/',
-        title: '数据分析',
-        filename: 'ana.html',
-        template: 'public/index.html',
-        chunks: ['ana']
-      }),
+    //   new HtmlWebpackPlugin({
+    //     baseUrl: '/',
+    //     title: '系统',
+    //     filename: 'index.html',
+    //     template: 'public/index.html',
+    //     chunks: ['index']
+    //   }),
+    //   new HtmlWebpackPlugin({
+    //     baseUrl: '/',
+    //     title: '比赛记录',
+    //     filename: 'list.html',
+    //     template: 'public/index.html',
+    //     chunks: ['list']
+    //   }),
+    //   new HtmlWebpackPlugin({
+    //     baseUrl: '/',gTg
+    //     title: '用户',
+    //     filename: 'user.html',
+    //     template: 'public/index.html',
+    //     chunks: ['user']
+    //   }),
+    //   new HtmlWebpackPlugin({
+    //     baseUrl: '/',
+    //     title: '数据分析',
+    //     filename: 'ana.html',
+    //     template: 'public/index.html',
+    //     chunks: ['ana']
+    //   }),
       new CopyWebpackPlugin({
         patterns: [
           { from: 'src/assets/d2img/', to: 'd2img/' }
@@ -63,5 +60,6 @@ module.exports = {
       .use('vue-svg-loader')
       .loader('vue-svg-loader')
   },
-  filenameHashing: false,
+  // filenameHashing: false,
+  productionSourceMap: true,
 }

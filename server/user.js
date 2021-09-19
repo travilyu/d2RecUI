@@ -28,7 +28,7 @@ let modifyUser = async(params) => {
         name: params.name
       }
     })
-    if (check.length !== 0 && check[0].name !== params.name) {
+    if (check !== 0 && check[0].name !== params.name) {
       throw Error('用户名已被占用')
     }
   }

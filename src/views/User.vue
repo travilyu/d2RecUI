@@ -1,20 +1,13 @@
 <template lang='pug'>
 div.m-2
   div
-    a-button(type='primary' @click='showModal') 添加
-  div
     a-modal(:visible='formVisible' :title='formTitle' okText='确认' cancelText='取消' @ok='confirm' @cancel='formVisible=false' width='100%' wrapClassName='full-modal')
       a-form(ref='formRef' :model='formData')
-        a-form-item(label='名称' name='name' required :label-col='{span: 2}')
-          a-input(placeholder='大名' v-model:value='formData.name')
-        a-form-item(label='别名' name='alias' :label-col='{span: 2}')
-          a-input(placeholder='别名，用逗号分隔' v-model:value='formData.alias')
+        a-form-item(label='名称' name='nick_name' required :label-col='{span: 2}')
+          a-input(placeholder='大名' v-model:value='formData.nick_name')
   a-table(:dataSource='users' :columns='columns' rowKey='id' :loading='loading')
     template(#action='{record}')
-      a(@click='openModifyUserModal(record)') 编辑
-      a-divider(type='vertical')
-      a-popconfirm(title='确认删除？' ok-text='是' cancel-text='否' @confirm='delUser(record)' @cancel='')
-        a 删除
+      a(@click='openModifyPlayerModal(record)') 编辑
 
 </template>
 
@@ -22,16 +15,25 @@ div.m-2
 import {
   ref,
 } from 'vue'
+import {
+  Table as ATable,
+  Modal as AModal,
+  Form as AForm,
+  Input as AInput,
+} from 'ant-design-vue'
 import HeroAndPlayer from './HeroAndPlayer.vue'
 import {
-  getUsers,
-  createUser,
-  modifyUser as modifyUserApi,
-  delUser as delUserApi,
+  getPlayers,
+  modifyPlayer as modifyPlayerApi,
 } from 'src/js/api.js'
 export default {
   components: {
     HeroAndPlayer,
+    ATable,
+    AModal,
+    AForm,
+    AFormItem: AForm.Item,
+    AInput,
   },
   setup() {
     let formVisible =ref(false)
@@ -41,9 +43,9 @@ export default {
     let formTitle = ref('')
     let loading =ref(false)
     let confirmAction
-    let loadUser = () => {
+    let loadPlayer = () => {
       loading.value = true
-      getUsers()
+      getPlayers()
         .then(data => {
           users.value = data
         })
@@ -51,40 +53,26 @@ export default {
           loading.value = false
         })
     }
-    loadUser()
+    loadPlayer()
 
-
-    let addUser = () => {
-      formRef.value.validate()
-        .then(data => {
-          createUser(data)
-            .then(() => {
-              formVisible.value = false
-              loadUser()
-            })
-        })
-    }
-    let openModifyUserModal = (d) => {
-      confirmAction = modifyUser
+    let openModifyPlayerModal = (d) => {
+      console.log(d)
+      confirmAction = modifyPlayer
       formData.value = d
       formTitle.value = '编辑'
       formVisible.value = true
     }
-    let modifyUser = () => {
+    let modifyPlayer = () => {
       formRef.value.validate()
         .then(data => {
-          modifyUserApi(data)
+          modifyPlayerApi({
+            id: formData.value.id,
+            nick_name: data.nick_name,
+          })
             .then(() => {
               formVisible.value = false
-              loadUser()
+              loadPlayer()
             })
-        })
-    }
-    let delUser = (user) => {
-      delUserApi(user.id)
-        .then(() => {
-          formVisible.value = false
-          loadUser()
         })
     }
 
@@ -98,22 +86,15 @@ export default {
       formData,
       formRef,
       formTitle,
-      showModal: () => {
-        formTitle.value = '新增'
-        formVisible.value = true
-        formData.value = {}
-        confirmAction = addUser
-      },
-      openModifyUserModal,
-      delUser,
+      openModifyPlayerModal,
       confirm,
       columns: [
-        {title: '用户', dataIndex: 'name', key: 'name'},
-        {title: '别名', dataIndex: 'alias', key: 'alias'},
+        {title: '用户', dataIndex: 'nick_name', key: 'name'},
+        {title: 'STEAMID', dataIndex: 'steam_id', key: 'sid'},
         {title: '操作', key: 'action', slots: { customRender: 'action' }}
       ],
       rules: {
-        name: [{required: true, trigger: 'blur'}]
+        nick_name: [{required: true, trigger: 'blur'}]
       },
     }
   }

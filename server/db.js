@@ -19,6 +19,14 @@ module.exports.User = s.define("user", {
   alias: { type: S.TEXT }
 })
 
+module.exports.Player = s.define("player", {
+  steam_id: { type: S.STRING },
+  avatar: { type: S.STRING },
+  nick_name: { type: S.STRING },
+}, {
+  timestamps: false,
+})
+
 module.exports.Match = s.define("match", {
   time: { type: S.DATE },
   win: { type: S.STRING },
@@ -43,6 +51,7 @@ module.exports.Match = s.define("match", {
   d_p_4: { type: S.INTEGER },
   d_p_5: { type: S.INTEGER },
   hash: {type: S.STRING},
+  type: {type: S.STRING},
 })
 
 s.sync()

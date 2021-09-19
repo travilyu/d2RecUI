@@ -1,14 +1,21 @@
 <template lang='pug'>
 div.m-2.bg-gray-50.grid.grid-cols-1.gap-4(class='sm:grid-cols-3')
-  div.acButton(@click='jump("/list.html")')
-    EditFilled.text-9xl
-    span.badge 录入数据
-  div.acButton(@click='jump("/ana.html")')
-    FundFilled.text-9xl
-    span.badge 查看数据
-  div.acButton(@click='jump("/user.html")')
-    SettingFilled.text-9xl
-    span.badge 设置
+  router-link(to='/match')
+    div.acButton
+      EditFilled.text-9xl
+      span.badge 比赛数据
+  router-link(to='/ana')
+    div.acButton
+      FundFilled.text-9xl
+      span.badge 总胜率
+  router-link(to='/playerAna')
+    div.acButton
+      FundFilled.text-9xl
+      span.badge 单人胜率
+  router-link(to='/user')
+    div.acButton
+      SettingFilled.text-9xl
+      span.badge 用户
 </template>
 
 <script>
