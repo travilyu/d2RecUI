@@ -1,4 +1,5 @@
-import { createApp } from 'vue'
+// import { createApp } from 'vue'
+let { createApp } = require('vue')
 import App from './Index.vue'
 import './base.js'
 

@@ -1,6 +1,6 @@
 <template lang="pug">
 div.full.m2
-  h3.text-3xl 总胜率图
+  h3.text-3xl 总胜率榜
   div#rate.full(:style='{height: computedHeight}')
 </template>
 <script>

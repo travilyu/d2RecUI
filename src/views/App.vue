@@ -16,6 +16,10 @@ div.m-2.bg-gray-50.grid.grid-cols-1.gap-4(class='sm:grid-cols-3')
     div.acButton
       SettingFilled.text-9xl
       span.badge 用户
+  router-link(to='/dev')
+    div.acButton
+      LikeFilled.text-9xl
+      span.badge 致谢
 </template>
 
 <script>
@@ -24,6 +28,7 @@ import {
   EditFilled,
   FundFilled,
   SettingFilled,
+  LikeFilled,
 } from '@ant-design/icons-vue'
 
 export default {
@@ -33,6 +38,7 @@ export default {
     EditFilled,
     FundFilled,
     SettingFilled,
+    LikeFilled,
   },
   data: () => {
     return {

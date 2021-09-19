@@ -14,6 +14,12 @@ module.exports = {
         js: resolve('src/js'),
       },
     },
+    externals: {
+      'vue': 'Vue',
+      'echarts': 'echarts',
+      'ant-design-vue': 'antd',
+      'moment': 'moment',
+    },
     plugins: [
     //   new HtmlWebpackPlugin({
     //     baseUrl: '/',

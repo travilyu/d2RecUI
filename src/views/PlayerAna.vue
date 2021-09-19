@@ -37,7 +37,7 @@ export default {
     AStatistic,
   },
   setup(props, context) {
-    let user = ref()
+    let user = ref('')
     let winCount = ref(0)
     let loseCount = ref(0)
     let computedHeight = ref('200px')
@@ -82,7 +82,10 @@ export default {
     let lastSid = Cookies.get('sid')
     if (lastSid) {
       this.user = lastSid
-      this.userChange()
+      this.$nextTick()
+        .then(() => {
+          this.userChange()
+        })
     }
   }
 }
