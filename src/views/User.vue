@@ -15,13 +15,6 @@ div.m-2
 import {
   ref,
 } from 'vue'
-import {
-  Table as ATable,
-  Modal as AModal,
-  Form as AForm,
-  Input as AInput,
-} from 'ant-design-vue'
-
 import HeroAndPlayer from './HeroAndPlayer.vue'
 import {
   getPlayers,
@@ -30,11 +23,6 @@ import {
 export default {
   components: {
     HeroAndPlayer,
-    ATable,
-    AModal,
-    AForm,
-    AFormItem: AForm.Item,
-    AInput,
   },
   setup() {
     let formVisible =ref(false)

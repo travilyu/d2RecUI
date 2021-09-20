@@ -1,8 +1,6 @@
-// import * as echarts from 'echarts'
-let echarts = require('echarts')
+import * as echarts from 'echarts'
 import _ from 'lodash'
 export default (id, rateData) => {
-  console.log(document.getElementById(id))
   let chart = echarts.init(document.getElementById(id))
   chart.resize()
   let users = _.map(rateData, d => d.user)

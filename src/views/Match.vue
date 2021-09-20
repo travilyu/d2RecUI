@@ -41,12 +41,6 @@ div.m-2
   import moment from 'moment'
   import {
     message,
-    Row as ARow,
-    Col as ACol,
-    Button as AButton,
-    Table as ATable,
-    Upload as AUpload,
-    Statistic as AStatistic,
   } from 'ant-design-vue'
   import { ref } from 'vue'
   import {
@@ -61,12 +55,6 @@ div.m-2
   export default {
     components: {
       UploadOutlined,
-      ARow,
-      ACol,
-      AUpload,
-      AButton,
-      ATable,
-      AStatistic,
     },
     setup() {
       let count = ref(1)

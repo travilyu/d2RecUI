@@ -1,21 +1,24 @@
 <template lang="pug">
 div.full.m2
   h3.text-3xl 总胜率榜
-  div#rate.full(:style='{height: computedHeight}')
+  rate-list(:data='data')
 </template>
 <script>
   import {
     getAllRate
   } from 'src/js/api.js'
-  import renderRate from 'src/js/rateChart.js'
+  import RateList from './RateList.vue'
   import {
     UserMap,
     LoadUser,
   } from 'src/js/preload.js'
   export default {
+    components: {
+      RateList
+    },
     data() {
       return {
-        computedHeight: '200px'
+        data: []
       }
     },
     mounted() {
@@ -25,16 +28,12 @@ div.full.m2
       ])
         .then(([data]) => {
           let userMap = UserMap.value
-          this.computedHeight = data.length * 30 + 60 + 'px'
-          this.$nextTick()
-            .then(() => {
-              renderRate('rate', data.map(d => {
-                return {
-                  ...d,
-                  user: _.get(userMap, [d.user, 'nick_name'], d.user),
-                }
-              }))
-            })
+          this.data = data.map(d => {
+            return {
+              ...d,
+              user: _.get(userMap, [d.user, 'nick_name'], d.user),
+            }
+          })
         })
     }
   }
