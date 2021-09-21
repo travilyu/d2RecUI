@@ -138,11 +138,15 @@ let getAllMatches = async (options = {}) => {
 const genHash = require("object-hash")
 
 let createMatch = async match => {
-  if ("hash" in match) {
-    delete match["hash"]
+  // if ("hash" in match) {
+  //   delete match["hash"]
+  // }
+  let hash = match['hash']
+  if (!hash) {
+    throw Error('必须指定hash')
   }
   match = parseInputMatch(match)
-  let hash = genHash(match)
+  // let hash = genHash(match)
   let check = await Match.findOne({
     where: {
       hash
@@ -151,7 +155,7 @@ let createMatch = async match => {
   if (check) {
     throw Error("该比赛已被收录")
   }
-  match["hash"] = hash
+  // match["hash"] = hash
   return Match.create(match)
 }
 

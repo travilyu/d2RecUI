@@ -8,6 +8,9 @@ div.m-2
   a-table(:dataSource='users' :columns='columns' rowKey='id' :loading='loading')
     template(#action='{record}')
       a(@click='openModifyPlayerModal(record)') 编辑
+      //a-divider(type='vertical')
+      //a-popconfirm(title='确认删除？' ok-text='是' cancel-text='否' @confirm='delPlayer(record)' @cancel='')
+      //  a 删除
 
 </template>
 
@@ -19,6 +22,7 @@ import HeroAndPlayer from './HeroAndPlayer.vue'
 import {
   getPlayers,
   modifyPlayer as modifyPlayerApi,
+  delPlayer as delPlayerApi,
 } from 'src/js/api.js'
 export default {
   components: {
@@ -64,6 +68,13 @@ export default {
             })
         })
     }
+    let delPlayer = (user) => {
+      delPlayerApi(user.id)
+        .then(() => {
+          formVisible.value = false
+          loadPlayer()
+        })
+    }
 
     let confirm = (...args) => {
       confirmAction(...args)
@@ -85,6 +96,7 @@ export default {
       rules: {
         nick_name: [{required: true, trigger: 'blur'}]
       },
+      delPlayer,
     }
   }
 }

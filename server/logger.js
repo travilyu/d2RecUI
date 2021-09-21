@@ -24,7 +24,7 @@ let myFormat = format.printf(({level, message, label, timestamp}) => {
 })
 
 let logger = winston.createLogger({
-  level: 'debug',
+  level: 'info',
   exitOnError: false,
   format: format.combine(format.timestamp(), myFormat),
   transports: [

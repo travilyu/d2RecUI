@@ -29,6 +29,16 @@ server.patch('/players', function(req, res, next) {
     })
 })
 
+server.del('/players/:id', function(req, res, next) {
+  let resReturn = genResReturn(res, next)
+  Player.delPlayer(req.params)
+    .then(data => {
+      resReturn(success(data))
+    }).catch(e => {
+      resReturn(fail(e.message))
+    })
+})
+
 //User
 let User = require('./user.js')
 server.get('/users', function(req, res, next) {

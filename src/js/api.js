@@ -41,6 +41,7 @@ export let delUser = id => API.del(base + `/api/users/${id}`)()
 
 export let getPlayers = API.get(base + '/api/players')
 export let modifyPlayer = API.patch(base + '/api/players')
+export let delPlayer = id => API.del(base + `/api/players/${id}`)()
 
 export let getMatches = API.get(base + '/api/matches')
 export let createMatch = API.post(base + '/api/matches')

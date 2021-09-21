@@ -54,6 +54,34 @@ module.exports.Match = s.define("match", {
   type: {type: S.STRING},
 })
 
+let MatchLog = s.define('match_log', {
+  dt: {type: S.DATE},
+  match_id: {type: S.INTEGER},
+  steam_id: {type: S.STRING},
+  player_name: {type: S.STRING},
+  player_nick_name: {type: S.STRING},
+  team_id: {type: S.INTEGER},
+  team_solt: {type: S.INTEGER},
+  hero_name: {type: S.INTEGER},
+}, {
+  timestamps: false,
+})
+MatchLog.removeAttribute('id')
+module.exports.MatchLog = MatchLog
+
+module.exports.Race = s.define('race', {
+  match_id: {
+    type: S.INTEGER,
+    primaryKey: true,
+  },
+  radiant_team_id: {type: S.INTEGER},
+  dire_team_id: {type: S.INTEGER},
+  won_team_id: {type: S.INTEGER},
+}, {
+  timestamps: false,
+  freezeTableName: true,
+})
+
 s.sync()
 
 if (require.main === module) {

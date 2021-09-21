@@ -1,5 +1,5 @@
 // const logger = require('./logger.js')
-// const assert = require('assert')
+const assert = require('assert')
 let { Player } = require('./db.js')
 
 let getAllPlayers = async(filter = {}) => {
@@ -30,7 +30,17 @@ let modifyPlayer = async(params) => {
   })
 }
 
+let delPlayer = async(params) => {
+  assert.ok('id' in params, '参数错误')
+  return Player.destroy({
+    where: {
+      id: params.id
+    }
+  })
+}
+
 module.exports = {
   getAllPlayers,
   modifyPlayer,
+  delPlayer,
 }

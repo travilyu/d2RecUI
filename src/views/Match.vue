@@ -19,11 +19,11 @@ div.m-2
       template(#radiant='{text: rs}')
         div(v-for='r in rs' style='margin:2px 0;')
           img(width='48' height='27' :src='heroMap[r.hero].img' style='display:inline-block')
-          span(style='display: inline-block; margin-left: 5px') {{ userMap[r.user].nick_name || r.user }}
+          span(style='display: inline-block; margin-left: 5px') {{ userMap[r.user] ? userMap[r.user].nick_name : r.user }}
       template(#dire='{text: rs}')
         div(v-for='r in rs' style='margin:2px 0;')
           img(width='48' height='27' :src='heroMap[r.hero].img' style='display:inline-block')
-          span(style='display: inline-block; margin-left: 5px') {{ userMap[r.user].nick_name || r.user }}
+          span(style='display: inline-block; margin-left: 5px') {{ userMap[r.user] ? userMap[r.user].nick_name : r.user }}
 
       // template(#action='{record}')
         a(@click='openModifyMatchModal(record)') 编辑

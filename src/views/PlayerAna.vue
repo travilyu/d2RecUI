@@ -7,10 +7,10 @@ div
     a-statistic(title='败场' :value='loseCount' style="margin-right: 50px")
   div.m-2.grid.grid-cols-1.gap-4(class='sm:grid-cols-2')
     div.p-6.full
-      div.text-sm 队友胜率
+      div.text-sm 队友
       rate-list(:data='mateData')
     div.p-6.full
-      div.text-sm 对手胜率
+      div.text-sm 对手
       rate-list(:data='oppData' :isMate='false')
 </template>
 <script>
@@ -43,7 +43,6 @@ export default {
       Cookies.set('sid', sid)
       Promise.all([
         getPlayerStatistic(sid),
-        LoadUser,
       ])
         .then(([data]) => {
           data = data.playerStatistic
@@ -77,14 +76,19 @@ export default {
     }
   },
   mounted() {
-    let lastSid = Cookies.get('sid')
-    if (lastSid) {
-      this.user = lastSid
+    LoadUser
+      .then(() => {
+      let lastSid = Cookies.get('sid')
+      if (lastSid) {
+        this.user = lastSid
+      } else {
+        this.user = userOptions.value[0].value
+      }
       this.$nextTick()
         .then(() => {
           this.userChange()
         })
-    }
+    })
   }
 }
 </script>
